@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+int dfs(vector<vector<int>>& adj, int src, vector<int>& visited, vector<int>& recStack)
+{
+    	visited[src] = 1;
+    	recStack[src] = 1;
+    	for (int i = 0; i < adj[src].size(); ++i) 
+    	{
+        		int neighbor = adj[src][i];
+        		if (!visited[neighbor]) 
+        		{		
+            			int result = dfs(adj, neighbor, visited, recStack);
+            			if (result != -1)
+                			return result;
+        		} 
+        		else if (recStack[neighbor]) 
+        		{
+            			return neighbor; 
+        		}
+    	}
+    	recStack[src] = 0; 
+    	return -1; 
+}
+int hasCycle(vector<vector<int>>& adj, int vertices) 
+{
+    	vector<int> visited(vertices, 0);
+    	vector<int> recStack(vertices, 0);
+    	for (int i = 0; i < vertices; ++i) 
+    	{
+       		 if (!visited[i])
+        		{
+            			int result = dfs(adj, i, visited, recStack);
+            			if (result != -1)
+               	 		return result; 
+        		}
+    	}
+    	return -1; 
+}
+int main() 
+{
+    	int vertices, edges;
+    	cout << "Enter the number of vertices: ";
+    	cin >> vertices;
+    	cout << "Enter the number of edges: ";
+    	cin >> edges;
+    	vector<vector<int>> adj(vertices);
+    	cout << "Enter the edges (vertex pairs):\n";
+    	for (int i = 0; i < edges; ++i) 	
+{
+        		int u, v;
+        		cin >> u >> v;
+        		adj[u].push_back(v);
+    	}
+    	int cycleNode = hasCycle(adj, vertices);
+    	if (cycleNode != -1)
+        		cout << "The graph contains a cycle. Node causing cycle: " << cycleNode << endl;
+   	 else
+        		cout << "The graph does not contain a cycle.\n";
+   	 return 0;
+}

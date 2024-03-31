@@ -1,0 +1,96 @@
+#include <iostream>
+#include <climits>
+#define MAX_VERTICES 100
+#define MAX_EDGES 100
+using namespace std;
+struct Edge
+{
+    int source;
+    int destination;
+    int weight;
+};
+struct Edge edges[MAX_EDGES];
+int num_vertices;
+int num_edges;
+void printPath(int parent[], int v)
+{
+    if (parent[v] == -1)
+    {
+        	cout << v << " ";
+        	return;
+    }
+    printPath(parent, parent[v]);
+   		 cout << v << " ";
+}
+void printSolution(int dist[], int parent[], int src, int dest)
+{
+   		 cout << "Shortest distance from " << src << " to " << dest << ": " << dist[dest] << endl;
+   		 cout << "Shortest path: ";
+    		 printPath(parent, dest);
+    		cout << endl;
+}
+void bellmanFord(int src, int dest)
+{
+    		int dist[MAX_VERTICES];
+    		int parent[MAX_VERTICES];
+    		for (int i = 0; i < num_vertices; i++)
+    		{
+        			dist[i] = INT_MAX;
+        			parent[i] = -1;
+    		 }
+    		 dist[src] = 0;
+    		 for (int i = 1; i <= num_vertices - 1; i++)
+    		 {
+        		 	for (int j = 0; j < num_edges; j++)
+        			{
+            			int u = edges[j].source;
+            			int v = edges[j].destination;
+           	 		int weight = edges[j].weight;
+            			if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
+            			{
+                			dist[v] = dist[u] + weight;
+                			parent[v] = u;
+            			}
+        			}
+    		}
+    		for (int j = 0; j < num_edges; j++)
+    		{
+        int u = edges[j].source;
+        int v = edges[j].destination;
+        int weight = edges[j].weight;
+        			        if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
+        			       {
+            				cout << "Negative weight cycle." << endl;
+            				return;
+        			       }
+    		}
+    		printSolution(dist, parent, src, dest);
+}
+int main()
+{
+    		int num_friends;
+    		int friend_locations[MAX_VERTICES];
+    		cout << "Enter the number of vertices (including Akshay's house): ";
+    		cin >> num_vertices;
+   		cout << "Enter the number of edges: ";
+    		cin >> num_edges;
+    		cout << "Enter the edges (source destination weight):\n";
+    		for (int i = 0; i < num_edges; i++)
+    		{
+       			 cin >> edges[i].source >> edges[i].destination >> edges[i].weight;
+    		}
+    cout << "Enter the number of friends (excluding Akshay): ";
+    cin >> num_friends;
+    cout << "Enter the locations of the friends (node numbers): ";
+    		 for (int i = 0; i < num_friends; i++)
+     		{
+        			cin >> friend_locations[i];
+    		}
+    		int akshay_house = 0;
+    		for (int i = 0; i < num_friends; i++)
+    		{
+        			bellmanFord(friend_locations[i], akshay_house);
+    		}
+    		return 0;
+}
+

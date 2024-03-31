@@ -1,0 +1,87 @@
+#include <iostream>
+#include <climits>
+#include <vector>
+using namespace std;
+#define MAX_VERTICES 100
+vector<vector<int>> graph(MAX_VERTICES, vector<int>(MAX_VERTICES));
+int num_vertices;
+int minDist(const vector<int>& dist, const vector<bool>& visited) 
+{
+    	int min = INT_MAX, min_index;
+    	for (int v = 0; v < num_vertices; v++) 
+    	{
+       			 if (!visited[v] && dist[v] < min) 
+        			{
+            		min = dist[v];
+            		min_index = v;
+        			}
+    	}
+    	return min_index;
+}
+void printPath(const vector<int>& parent, int v) 
+{
+    		if (parent[v] == -1) 
+    		{
+        			cout << v << " ";
+       			 return;
+    		}
+   		 printPath(parent, parent[v]);
+   		 cout << v << " ";
+}
+void Print(const vector<int>& dist, const vector<int>& parent, int src, int dest) 
+{
+    		cout << "Shortest distance from " << src << " to " << dest << ": " << dist[dest] << endl;
+    		cout << "Shortest path: ";
+    		printPath(parent, dest);
+    		cout << endl;
+}
+void dijkstra(int src, int dest) 
+{
+    		vector<int> dist(MAX_VERTICES, INT_MAX);
+    		vector<bool> visited(MAX_VERTICES, false);
+    		vector<int> parent(MAX_VERTICES, -1);
+    		dist[src] = 0;
+    		parent[src] = -1;
+    		for (int count = 0; count < num_vertices - 1; count++) 
+    		{
+        			int u = minDist(dist, visited);
+        			visited[u] = true;
+        			for (int v = 0; v < num_vertices; v++) 
+        			{
+ if (!visited[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v]) 
+            		{
+                			dist[v] = dist[u] + graph[u][v];
+                			parent[v] = u;
+            		}
+        			}
+    	}
+    	Print(dist, parent, src, dest);
+}
+int main() 
+{
+    	int num_friends;
+    	vector<int> friend_locations(MAX_VERTICES);
+    	cout << "Enter the number of vertices (including Akshay's house): ";
+    	cin >> num_vertices;
+   	cout << "Enter the adjacency matrix:\n";
+   	 for (int i = 0; i < num_vertices; i++) 
+    	{
+        			for (int j = 0; j < num_vertices; j++) 
+        			{
+           			 cin >> graph[i][j];
+        			}
+    	}
+    	cout << "Enter the number of friends (excluding Akshay): ";
+    	cin >> num_friends;
+    	cout << "Enter the locations of the friends: ";
+    	for (int i = 0; i < num_friends; i++) 
+    	{
+       			cin >> friend_locations[i];
+    	}
+    	int akshay_house = 0;
+    	for (int i = 0; i < num_friends; i++) 
+    	{
+        			dijkstra(friend_locations[i], akshay_house);
+    	}
+    	return 0;
+}

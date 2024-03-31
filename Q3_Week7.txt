@@ -1,0 +1,78 @@
+#include <iostream>
+#include <climits>
+using namespace std;
+#define MAX_VERTICES 100
+void shortestPathWithKEdges(int graph[MAX_VERTICES][MAX_VERTICES], int numVertices, int source, int destination, int k) 
+{    
+    int dp[MAX_VERTICES][MAX_VERTICES][k + 1];    
+    for (int i = 1; i <= numVertices; i++) 
+    {        
+        for (int j = 1; j <= numVertices; j++) 
+        {            
+            for (int l = 0; l <= k; l++) 
+            {                
+                if (l == 0) 
+                {                    
+                    		dp[i][j][l] = graph[i][j];         
+                } 
+                else 
+                {                    
+                   		 dp[i][j][l] = INT_MAX;                
+                }            
+            	}        
+        	        }    
+    }    
+    for (int l = 1; l <= k; l++) 
+    {        
+        for (int x = 1; x <= numVertices; x++) 
+        {            
+            for (int i = 1; i <= numVertices; i++) 
+            {                
+                for (int j = 1; j <= numVertices; j++) 
+                {                    
+if (dp[i][x][l - 1] != INT_MAX && dp[x][j][1] != INT_MAX) 
+                    		{                        
+ dp[i][j][l] = min(dp[i][j][l], dp[i][x][l - 1] + dp[x][j][1]);        
+                    		}                
+                }            
+            }        
+        }   
+    }    
+    int shortestPathWeight = dp[source][destination][k];    
+    if (shortestPathWeight == INT_MAX) 
+    {        
+cout << "No path found with exactly " << k << " edges from source to destination." << endl;    
+    } 
+    else 
+    {        
+ cout << "Weight of the shortest path with exactly " << k << " edges from source to destination: " << shortestPathWeight << endl;    
+    }
+}
+
+int main() 
+{    
+    int numVertices;    
+    cout << "Enter the number of vertices in the graph: ";    
+    cin >> numVertices;    
+    int graph[MAX_VERTICES][MAX_VERTICES];    
+    cout << "Enter the adjacency matrix representing the graph:" << endl;    
+    for (int i = 1; i <= numVertices; i++) 
+    {        
+        for (int j = 1; j <= numVertices; j++) 
+        {            
+            	cin >> graph[i][j];        
+        }
+    }    
+    int source, destination, k;    
+    cout << "Enter the source vertex: ";    
+    cin >> source;    
+    cout << "Enter the destination vertex: ";    
+    cin >> destination;    
+    cout << "Enter the number of edges allowed on the path (k): ";    
+    cin >> k;    
+    shortestPathWithKEdges(graph, numVertices, source, destination, k);    
+    return 0;
+}
+
+
+
