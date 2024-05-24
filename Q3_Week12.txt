@@ -1,0 +1,26 @@
+#include <iostream>
+using namespace std;
+
+void generatePermutations(string& str, int index, int length) {
+    if (index == length - 1) {
+        cout << str << endl;
+        return;
+    }
+
+    for (int i = index; i < length; i++) {
+        swap(str[index], str[i]);
+        generatePermutations(str, index + 1, length);
+        swap(str[index], str[i]);
+    }
+}
+
+int main() {
+    string s;
+    cout << "Enter a string of characters: ";
+    cin >> s;
+
+    generatePermutations(s, 0, s.length());
+
+    return 0;
+}
+ 
