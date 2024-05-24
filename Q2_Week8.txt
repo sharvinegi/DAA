@@ -1,0 +1,156 @@
+#include <iostream> #include <vector> #include <algorithm> using namespace std;
+
+struct Edge
+{
+
+int src, dest, weight;
+};
+
+
+struct Subset
+{
+
+int parent, rank;
+};
+
+
+bool compareEdges(const Edge &a, const Edge &b)
+{
+
+return a.weight < b.weight;
+
+}
+
+
+int find(vector<Subset> &subsets, int i)
+{
+
+if (subsets[i].parent != i)
+      subsets[i].parent = find(subsets, subsets[i].parent); return subsets[i].parent;
+}
+
+
+void Union(vector<Subset> &subsets, int x, int y)
+{
+
+int xroot = find(subsets, x); int yroot = find(subsets, y);
+
+if (subsets[xroot].rank < subsets[yroot].rank) subsets[xroot].parent = yroot;
+else if (subsets[xroot].rank > subsets[yroot].rank) subsets[yroot].parent = xroot;
+
+else
+{
+
+
+
+
+}
+}
+
+
+
+
+subsets[yroot].parent = xroot; subsets[xroot].rank++;
+
+
+
+int kruskalMST(vector<vector < int>> &graph, int V)
+{
+
+vector<Edge> edges;
+
+for (int i = 0; i < V; ++i)
+{
+
+for (int j = i + 1; j < V; ++j)
+{
+
+if (graph[i][j] != 0)
+{
+
+Edge edge; edge.src = i; edge.dest = j;
+edge.weight = graph[i][j]; edges.push_back(edge);
+}
+}
+}
+
+
+sort(edges.begin(), edges.end(), compareEdges);
+
+
+vector<Subset> subsets(V);
+
+
+for (int i = 0; i < V; ++i)
+{
+
+subsets[i].parent = i; subsets[i].rank = 0;
+}
+
+
+int minCost = 0; int e = 0;
+int i = 0;
+while (e < V - 1 && i < edges.size())
+
+{
+Edge next_edge = edges[i++];
+int x = find(subsets, next_edge.src); int y = find(subsets, next_edge.dest);
+
+if (x != y)
+{
+
+minCost += next_edge.weight; Union(subsets, x, y);
+++e;
+}
+}
+
+
+return minCost;
+}
+
+
+int main()
+{
+
+int V;
+cin >> V;
+
+
+vector<vector < int>> graph(V, vector<int> (V)); for (int i = 0; i < V; ++i)
+{
+
+for (int j = 0; j < V; ++j)
+{
+
+cin >> graph[i][j];
+}
+}
+
+
+int numEdges = 0;
+for (int i = 0; i < V; ++i)
+{
+
+for (int j = i + 1; j < V; ++j)
+{
+
+if (graph[i][j] != 0)
+{
+
+numEdges++;
+}
+}
+}
+
+
+int minCost = kruskalMST(graph, V);
+
+
+cout << "Number of vertices: " << V << endl;
+cout << "Number of edges: " << numEdges << endl;
+cout << "Minimum spanning weight: " << minCost << endl;
+
+
+return 0;
+}
+

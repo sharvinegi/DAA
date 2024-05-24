@@ -1,0 +1,41 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int minComputationCost(vector<int> &arr)
+{
+	sort(arr.begin(), arr.end());
+	int total_cost = 0;
+	while (arr.size() > 1)
+	{
+		int merge_cost = arr[0] + arr[1];
+		total_cost += merge_cost;
+		arr.erase(arr.begin(), arr.begin() + 2);
+		auto it = lower_bound(arr.begin(), arr.end(), merge_cost);
+		arr.insert(it, merge_cost);
+	}
+
+	return total_cost;
+}
+
+int main()
+{
+	int n;
+	cout << "Enter the size of the array: ";
+	cin >> n;
+
+	vector<int> arr(n);
+	cout << "Enter the array of file sizes: ";
+	for (int i = 0; i < n; ++i)
+	{
+		cin >> arr[i];
+	}
+
+	int cost = minComputationCost(arr);
+	cout << "Minimum computation cost required: " << cost << endl;
+
+	return 0;
+}
+?
+
